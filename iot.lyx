@@ -1,0 +1,463 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options true
+\maintain_unincluded_children false
+\language spanish
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "times" "default"
+\font_sans "helvet" "default"
+\font_typewriter "cmtt" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language french
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Amazon Web Services IoT
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+Internet de las Cosas
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size normal
+Máster en Ciencia de Datos e Ingeniería de Computadores
+\begin_inset Newline newline
+\end_inset
+
+Universidad de Granada
+\end_layout
+
+\begin_layout Author
+Cristian G Guerrero
+\end_layout
+
+\begin_layout Chapter
+Introducción
+\end_layout
+
+\begin_layout Standard
+Este documento presenta ...
+\end_layout
+
+\begin_layout Standard
+Este documento se organiza en las siguientes secciones: 
+\end_layout
+
+\begin_layout Itemize
+En primer lugar, presentaremos la plataforma de Amazon para Internet de
+ las Cosas (AWS IoT).
+ Bajo este epígrafe describiremos aspectos que será conveniente tener en
+ cuenta en la posterior integración de la
+\end_layout
+
+\begin_layout Itemize
+A continuación, discutiremos los elementos necesarios para llevar a cabo
+ la implementación de la conexión de AWS con el dispositivo ESP8266.
+\end_layout
+
+\begin_layout Itemize
+Finalmente, montaremos un panel de visualización de datos (dashboard) basado
+ en ###.
+\end_layout
+
+\begin_layout Chapter
+Amazon Web Services IoT
+\end_layout
+
+\begin_layout Standard
+En esta sección describimos la arquitectura de la plataforma de Amazon para
+ Internet de las Cosas, explorando su potencial y las particularidades que
+ presenta.
+\end_layout
+
+\begin_layout Standard
+Como se describe en #missing reference#, AWS IoT proporciona una 
+\emph on
+comunicación bidireccional segura
+\emph default
+ entre dispositivos conectados a Internet, como sensores, actuadores, microcontr
+oladores embebidos o electrodomésticos inteligentes y la nube de Amazon
+ (
+\emph on
+AWS Cloud
+\emph default
+).
+ Esto nos permite recoger y almacenar y analizar datos de una gran variedad
+ de dispositivos.
+ Del mismo modo, nos permite crear aplicaciones que permitan controlar estos
+ dispositivos a través de un 
+\emph on
+smartphone
+\emph default
+ o 
+\emph on
+tablet
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+En este sentido, AWS IoT actúa como una pasarela a la cuál pueden conectarse
+ tanto dispositivos como aplicaciones de terceros.
+ Además, ofrece una interfaz sencilla para procesar los datos recogidos
+ a través de los demás servicios de AWS.
+ Este modo de operación hace que Amazon se haya esforzado en proporcionar
+ una plataforma robusta y segura, con un panel de control relativamente
+ complejo que permite gestionar todas las opciones.
+ No obstante, AWS IoT no proporciona por sí mismo herramientas para representar
+ los datos obtenidos.
+\end_layout
+
+\begin_layout Section
+Componentes de AWS IoT
+\end_layout
+
+\begin_layout Standard
+A continuación describimos los componentes principales de AWS IoT.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/AWS_IoT23._CB520207442_.png
+	lyxscale 60
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Principales componentes de AWS IoT.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Device
+\begin_inset space ~
+\end_inset
+
+gateway
+\begin_inset space ~
+\end_inset
+
+(
+\emph on
+Gateway
+\begin_inset space ~
+\end_inset
+
+para
+\begin_inset space ~
+\end_inset
+
+dispositivos
+\emph default
+) se encarga de establecer la comunicación entre la nube de Amazon y cada
+ dispositivo.
+ El 
+\emph on
+Device
+\begin_inset space ~
+\end_inset
+
+gateway
+\emph default
+ es el responsable de que esta comunicación se lleve a cabo de forma eficiente
+ y segura.
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+Message
+\begin_inset space ~
+\end_inset
+
+broker
+\begin_inset space ~
+\end_inset
+
+(
+\emph on
+Agente
+\begin_inset space ~
+\end_inset
+
+de
+\begin_inset space ~
+\end_inset
+
+mensajes
+\emph default
+) proporciona un mecanismo seguro para que los dispositivos y las aplicaciones
+ de AWS IoT publiquen y reciban mensajes entre sí, basándose en el protocolo
+ MQTT o en MQTT sobre WebSocket.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+Rules
+\begin_inset space ~
+\end_inset
+
+engine
+\begin_inset space ~
+\end_inset
+
+(
+\emph on
+Motor
+\begin_inset space ~
+\end_inset
+
+de
+\begin_inset space ~
+\end_inset
+
+reglas
+\emph default
+) proporciona funciones de procesamiento de mensajes y de integración con
+ otros sevicios de la nube de Amazon.
+ También permite usar el 
+\emph on
+Message
+\begin_inset space ~
+\end_inset
+
+broker
+\emph default
+ para volver a publicar mensajes para otros suscriptores.
+\end_layout
+
+\begin_layout Description
+Registry
+\begin_inset space ~
+\end_inset
+
+(Registro) organiza los recursos asociados a cada dispositivo en la nube
+ de Amazon (AWS Cloud).
+ Es necesario registrar los dispositivos y asociar hasta tres atributos
+ personalizados a cada uno.
+ Este componente también es responsable de asociar los certificados digitales
+ y los IDs de clientes MQTT a cada dispositivo.
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+Group
+\begin_inset space ~
+\end_inset
+
+registry
+\begin_inset space ~
+\end_inset
+
+(Registro
+\begin_inset space ~
+\end_inset
+
+de
+\begin_inset space ~
+\end_inset
+
+grupos) permite administrar varios dispositivos a la vez clasificándolos
+ en grupos.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+Device
+\begin_inset space ~
+\end_inset
+
+shadow
+\begin_inset space ~
+\end_inset
+
+(Sombra
+\begin_inset space ~
+\end_inset
+
+del
+\begin_inset space ~
+\end_inset
+
+dispositivo) documento JSON utilizado para almacenar y recuperar información
+ del estado actual de un dispositivo.
+\end_layout
+
+\begin_layout Standard
+AWS IoT dispone de otros componentes y servicios con los que el desarrollador
+ puede interactuar para realizar tareas específicas.
+ No obstante, su uso es más avanzado y queda fuera de los objetivos de este
+ documento.
+\end_layout
+
+\begin_layout Standard
+Cabe mencionar que tanto el agente de mensajes como el motor de reglas utilizan
+ las características de seguridad de AWS para enviar datos de forma segura
+ a dispositivos u otros servicios de AWS.
+ De este modo, tan solo los dispositivos convenientemente autorizados pueden
+ establecer una comunicación con AWS IoT.
+\end_layout
+
+\begin_layout Section
+Disparadores y reglas
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+AWS Lambda??
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+AWS Greengrass
+\end_layout
+
+\begin_layout Standard
+AWS Greengrass es una nueva tecnología de Amazon, independiente a AWS IoT.
+ Este servicio nos permite almacenar los datos generados por un grupo de
+ dispositivos en la red local, optimizando el uso de la red y permitiendo
+ ejecutar acciones de forma local.
+ Para ello, comenzamos por definir un conjunto de dispositivos, que denominaremo
+s 
+\emph on
+Greengrass
+\begin_inset space ~
+\end_inset
+
+Group
+\emph default
+.
+ Este grupo tiene como componente central un elemento físico: el
+\emph on
+ Greengrass
+\begin_inset space ~
+\end_inset
+
+Core
+\emph default
+.
+ Definiremos tanto la arquitectura del Greengrass Group como los disparadores
+ asociados a los distintos eventos de forma segura en la plataforma AWS
+ Greengrass.
+ De esta manera, la publicación y recepción de mensajes y las reglas quedan
+ definidas en la nube.
+ Una vez concluida la configuración, su despliegue en el la red de área
+ local es tan simple como sincronizar el Greengrass Core, que pasará a adoptar
+ la configuración definida en la nube.
+ Como resultado, el grupo de dispositivos es capaz de almacenar los datos
+ y procesarlos a pesar de que la conexión a Internet sea intermitente, permitien
+do una respuesta rápida a los eventos y optimizando los recursos de red.
+\end_layout
+
+\begin_layout Chapter
+Conexión entre ESP8266 y AWS IoT
+\end_layout
+
+\begin_layout Section
+Inicialización de la plataforma
+\end_layout
+
+\begin_layout Section
+Conexión del dispositivo a la plataforma
+\end_layout
+
+\begin_layout Chapter
+Visualización de los datos
+\end_layout
+
+\end_body
+\end_document
