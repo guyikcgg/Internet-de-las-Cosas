@@ -17,6 +17,12 @@
 \def\ULurl@#1{\hyper@linkurl{\ULurl@@{#1}}{#1}}
 \DeclareRobustCommand*\url{\hyper@normalise\ULurl@}
 \makeatother
+
+% new line when needed for URLs
+\sloppy
+
+\let\oldforeignlanguage\foreignlanguage
+\renewcommand{\foreignlanguage}[2]{\emph{\oldforeignlanguage{#1}{#2}}}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -73,6 +79,8 @@
 \suppress_date false
 \justification true
 \use_refstyle 1
+\notefontcolor #555753
+\boxbgcolor #faf583
 \index Index
 \shortcut idx
 \color #008000
@@ -152,27 +160,353 @@ Este documento presenta ...
 \end_layout
 
 \begin_layout Standard
-Este documento se organiza en las siguientes secciones: 
+Internet de las Cosas es guay...
+\end_layout
+
+\begin_layout Standard
+prueba de ello es el gran crecimiento....
+ y la multitud de plataformas IoT disponibles.
+ En este trabajo, conectaremos un dispositivo IoT a una de estas plataformas.
+ ###
+\end_layout
+
+\begin_layout Section
+Objetivos
+\end_layout
+
+\begin_layout Standard
+El principal objetivo de este trabajo es construir y programar un dispositivo
+ IoT, que enviará ciertas medidas a 
+\emph on
+la nube
+\emph default
+.
+ En concreto, el dispositivo contará con la capacidad de monitorizar la
+ distancia de forma continua, transmitiendo los valores medidos a la nube
+ de Amazon (
+\emph on
+Amazon
+\begin_inset space ~
+\end_inset
+
+Cloud
+\emph default
+).
+\end_layout
+
+\begin_layout Standard
+Basaremos nuestro diseño en la placa de desarrollo 
+\emph on
+NodeMCU
+\begin_inset space ~
+\end_inset
+
+Amica
+\emph default
+.
+ Esta placa está basada en el módulo Wi-Fi 
+\emph on
+ESP8266
+\emph default
+, que dispone de una pila TCP/IP completa y de un microcontrolador.
+ Los valores de distancia serán medidos gracias al sensor de ultrasonidos
+ 
+\emph on
+US-100
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+Nuestro dispositivo se conectará a la nube de Amazon Web Services para IoT
+ (
+\emph on
+AWS
+\begin_inset space ~
+\end_inset
+
+IoT
+\emph default
+).
+ La comunicación entre el dispositivo y la nube se llevará a cabo a través
+ del protocolo MQTT, tras haber establecido un canal seguro mediante TLS.
+\end_layout
+
+\begin_layout Standard
+Finalmente, visualizaremos los datos con un panel de control (dashboard)
+ basado en ###.
+ De esta forma, contaremos con un sistema IoT completamente funcional.
+\end_layout
+
+\begin_layout Section
+Kit de desarrollo
+\end_layout
+
+\begin_layout Standard
+Para la realización de este trabajo contamos con un kit de desarrollo que
+ contiene los siguientes elementos.
+\end_layout
+
+\begin_layout Description
+NodeMCU
+\begin_inset space ~
+\end_inset
+
+Amica será el cerebro de nuestro dispositivo.
+ Contiene el módulo ESP8266, que programaremos para establecer la comunicación
+ con la nube a través de una conexión Wi-Fi.
+ Más información en 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://espressif.com/en/products/esp8266/
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Description
+US-100 es el sensor que medirá la distancia a petición de nuestro programa
+ en el ESP8266.
+ 
+\end_layout
+
+\begin_layout Description
+Cable
+\begin_inset space ~
+\end_inset
+
+USB este cable 
+\emph on
+USB
+\begin_inset space ~
+\end_inset
+
+tipo
+\begin_inset space ~
+\end_inset
+
+A
+\emph default
+ a 
+\emph on
+Micro
+\begin_inset space ~
+\end_inset
+
+USB
+\begin_inset space ~
+\end_inset
+
+tipo
+\begin_inset space ~
+\end_inset
+
+B
+\emph default
+ nos servirá para programar el módulo ESP8266 desde nuestro ordenador.
+\end_layout
+
+\begin_layout Description
+Placa
+\begin_inset space ~
+\end_inset
+
+de
+\begin_inset space ~
+\end_inset
+
+prototipado
+\begin_inset space ~
+\end_inset
+
+y
+\begin_inset space ~
+\end_inset
+
+cables
+\begin_inset space ~
+\end_inset
+
+puente necesarios para interconectar el módulo ESP8266 con el sensor US-100.
+\end_layout
+
+\begin_layout Standard
+Podemos observar los elementos previamente descritos en la figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Kit-de-desarrollo"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/device-00-kit-v2.jpg
+	lyxscale 10
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Kit-de-desarrollo"
+
+\end_inset
+
+Kit de desarrollo de la asignatura Internet de las Cosas.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Estructura del documento
+\end_layout
+
+\begin_layout Standard
+Este documento se organiza en las siguientes secciones, atendiendo a los
+ pasos que realizaremos.
 \end_layout
 
 \begin_layout Itemize
-En primer lugar, presentaremos la plataforma de Amazon para Internet de
- las Cosas (AWS IoT).
- Bajo este epígrafe describiremos aspectos que será conveniente tener en
- cuenta en la posterior integración de la
+En primer lugar, en el capítulo
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:THEORY"
+
+\end_inset
+
+, presentaremos la plataforma de Amazon para Internet de las Cosas (AWS
+\begin_inset space ~
+\end_inset
+
+IoT).
+ Bajo este epígrafe describiremos los aspectos que será conveniente tener
+ en cuenta en la posterior integración del dispositivo en la plataforma.
 \end_layout
 
 \begin_layout Itemize
-A continuación, discutiremos los elementos necesarios para llevar a cabo
- la implementación de la conexión de AWS con el dispositivo ESP8266.
+El capítulo
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:CONECTION"
+
+\end_inset
+
+ está dedicado a los elementos necesarios para llevar a cabo la conexión
+ de AWS
+\begin_inset space ~
+\end_inset
+
+IoT con el dispositivo ESP8266.
+ En este capítulo trataremos tanto la confiugración de nuestra instancia
+ AWS
+\begin_inset space ~
+\end_inset
+
+IoT (sección
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Configuración-de-AWSIoT"
+
+\end_inset
+
+), como el montaje del dispositivo físico (sección
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Montaje-del-dispositivo"
+
+\end_inset
+
+).
+ Finalmente, procederemos a su programación (sección
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Configuración-de-NodeMCU"
+
+\end_inset
+
+).
+ 
 \end_layout
 
 \begin_layout Itemize
-Finalmente, montaremos un panel de visualización de datos (dashboard) basado
- en ###.
+Por último, en el capítulo
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:DASHBOARD"
+
+\end_inset
+
+, diseñaremos un panel para la visualización de datos (
+\lang english
+dashboard
+\lang spanish
+) basado en ###.
 \end_layout
 
 \begin_layout Chapter
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:THEORY"
+
+\end_inset
+
 Amazon Web Services IoT
 \end_layout
 
@@ -183,7 +517,11 @@ En esta sección describimos la arquitectura de la plataforma de Amazon para
 \end_layout
 
 \begin_layout Standard
-Como se describe en #missing reference#, AWS IoT proporciona una 
+Como se describe en #missing reference#, AWS
+\begin_inset space ~
+\end_inset
+
+IoT proporciona una 
 \emph on
 comunicación bidireccional segura
 \emph default
@@ -191,7 +529,11 @@ comunicación bidireccional segura
 oladores embebidos o electrodomésticos inteligentes y la nube de Amazon
  (
 \emph on
-AWS Cloud
+AWS
+\begin_inset space ~
+\end_inset
+
+Cloud
 \emph default
 ).
  Esto nos permite recoger y almacenar y analizar datos de una gran variedad
@@ -216,8 +558,12 @@ En este sentido, AWS IoT actúa como una pasarela a la cuál pueden conectarse
  Este modo de operación hace que Amazon se haya esforzado en proporcionar
  una plataforma robusta y segura, con un panel de control relativamente
  complejo que permite gestionar todas las opciones.
- No obstante, AWS IoT no proporciona por sí mismo herramientas para representar
- los datos obtenidos.
+ No obstante, AWS
+\begin_inset space ~
+\end_inset
+
+IoT no proporciona por sí mismo herramientas para representar los datos
+ obtenidos.
 \end_layout
 
 \begin_layout Section
@@ -264,16 +610,6 @@ Principales componentes de AWS IoT.
 \end_layout
 
 \begin_layout Description
-Device
-\begin_inset space ~
-\end_inset
-
-gateway
-\begin_inset space ~
-\end_inset
-
-(
-\emph on
 Gateway
 \begin_inset space ~
 \end_inset
@@ -283,7 +619,17 @@ para
 \end_inset
 
 dispositivos
-\emph default
+\begin_inset space ~
+\end_inset
+
+(
+\lang english
+Device
+\begin_inset space ~
+\end_inset
+
+gateway
+\lang spanish
 ) se encarga de establecer la comunicación entre la nube de Amazon y cada
  dispositivo.
  El 
@@ -300,16 +646,6 @@ gateway
 
 \begin_deeper
 \begin_layout Description
-Message
-\begin_inset space ~
-\end_inset
-
-broker
-\begin_inset space ~
-\end_inset
-
-(
-\emph on
 Agente
 \begin_inset space ~
 \end_inset
@@ -319,7 +655,17 @@ de
 \end_inset
 
 mensajes
-\emph default
+\begin_inset space ~
+\end_inset
+
+(
+\lang english
+Message
+\begin_inset space ~
+\end_inset
+
+broker
+\lang spanish
 ) proporciona un mecanismo seguro para que los dispositivos y las aplicaciones
  de AWS IoT publiquen y reciban mensajes entre sí, basándose en el protocolo
  MQTT o en MQTT sobre WebSocket.
@@ -327,16 +673,6 @@ mensajes
 
 \end_deeper
 \begin_layout Description
-Rules
-\begin_inset space ~
-\end_inset
-
-engine
-\begin_inset space ~
-\end_inset
-
-(
-\emph on
 Motor
 \begin_inset space ~
 \end_inset
@@ -346,31 +682,45 @@ de
 \end_inset
 
 reglas
-\emph default
+\begin_inset space ~
+\end_inset
+
+(
+\lang english
+Rules
+\begin_inset space ~
+\end_inset
+
+engine
+\lang spanish
 ) proporciona funciones de procesamiento de mensajes y de integración con
  otros sevicios de la nube de Amazon.
  También permite usar el 
-\emph on
+\lang english
 Message
 \begin_inset space ~
 \end_inset
 
 broker
-\emph default
+\lang spanish
  para volver a publicar mensajes para otros suscriptores.
 \end_layout
 
 \begin_layout Description
-Registry
+Registro
 \begin_inset space ~
 \end_inset
 
 (
-\emph on
-Registro
-\emph default
+\lang english
+Registry
+\lang spanish
 ) organiza los recursos asociados a cada dispositivo en la nube de Amazon
- (AWS Cloud).
+ (AWS
+\begin_inset space ~
+\end_inset
+
+Cloud).
  Es necesario registrar los dispositivos y asociar hasta tres atributos
  personalizados a cada uno.
  Este componente también es responsable de asociar los certificados digitales
@@ -379,16 +729,6 @@ Registro
 
 \begin_deeper
 \begin_layout Description
-Group
-\begin_inset space ~
-\end_inset
-
-registry
-\begin_inset space ~
-\end_inset
-
-(
-\emph on
 Registro
 \begin_inset space ~
 \end_inset
@@ -398,22 +738,22 @@ de
 \end_inset
 
 grupos
-\emph default
+\begin_inset space ~
+\end_inset
+
+(
+\lang english
+Group
+\begin_inset space ~
+\end_inset
+
+registry
+\lang spanish
 ) permite administrar varios dispositivos a la vez clasificándolos en grupos.
 \end_layout
 
 \end_deeper
 \begin_layout Description
-Device
-\begin_inset space ~
-\end_inset
-
-shadow
-\begin_inset space ~
-\end_inset
-
-(
-\emph on
 Sombra
 \begin_inset space ~
 \end_inset
@@ -423,7 +763,17 @@ del
 \end_inset
 
 dispositivo
-\emph default
+\begin_inset space ~
+\end_inset
+
+(
+\lang english
+Device
+\begin_inset space ~
+\end_inset
+
+shadow
+\lang spanish
 ) documento JSON utilizado para almacenar y recuperar información del estado
  actual de un dispositivo.
 \end_layout
@@ -454,16 +804,24 @@ Esquema de funcionamiento
 \end_layout
 
 \begin_layout Standard
-Dispositivo físico ejecutando la AWS IoT SDK.
+Dispositivo físico ejecutando la AWS
+\begin_inset space ~
+\end_inset
+
+IoT
+\begin_inset space ~
+\end_inset
+
+SDK.
  Debe disponer de un certificado digital que lo autentique y del CA necesario
  para autenticar AWS.
 \end_layout
 
 \begin_layout Standard
 Por otro lado, tendremos que definir este dispositivo en la plataforma,
- usando la herramienta de 
+ usando la 
 \emph on
-registro
+herramienta de registro
 \emph default
 .
  Este dispositivo virtual tendrá que tener asociado un certificado digital
@@ -560,19 +918,31 @@ topic
  Las acciones que pueden asociarse a un evento suponen la interacción con
  otros servicios de la nube de Amazon.
  Así, por ejemplo, es posible intertar un nuevo registro en una base de
- datos AWS
+ datos 
+\emph on
+AWS
 \begin_inset space ~
 \end_inset
 
-DynamoDB, invocar una función AWS
+DynamoDB
+\emph default
+, invocar una función 
+\emph on
+AWS
 \begin_inset space ~
 \end_inset
 
-Lambda o enviar mensajes específicos a AWS
+Lambda
+\emph default
+ o enviar mensajes específicos a 
+\emph on
+AWS
 \begin_inset space ~
 \end_inset
 
-Salesforce.
+Salesforce
+\emph default
+.
 \end_layout
 
 \begin_layout Standard
@@ -630,276 +1000,83 @@ do una respuesta rápida a los eventos y optimizando los recursos de red.
 \end_layout
 
 \begin_layout Chapter
-Conexión entre ESP8266 y AWS IoT
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:CONECTION"
+
+\end_inset
+
+Conexión entre ESP8266 y AWS
+\begin_inset space ~
+\end_inset
+
+IoT
+\end_layout
+
+\begin_layout Standard
+Ahora que hemos estudiado la estructura de AWS
+\begin_inset space ~
+\end_inset
+
+IoT, vamos a poner nuestros conocimientos en práctica conectando un dispositivo
+ a la nube.
+ Este dispositivo enviará mensajes periódicamente, que contendrán los valores
+ de distancia medidos.
+ Para llevar a cabo este proceso, tendremos que ocuparnos de dos tareas
+ principales.
+ En primer lugar, nos ocuparemos de definir un nuevo dispositivo en la nube
+ de Amazon.
+ A continuación, escribiremos el programa que se ejecutará en el módulo
+ ESP8266, a fin de que este establezca conexión con AWS
+\begin_inset space ~
+\end_inset
+
+IoT.
 \end_layout
 
 \begin_layout Section
-Inicialización de la plataforma
-\end_layout
-
-\begin_layout Standard
-En esta sección trataremos todo lo referente a la configuración de la plataforma
- AWS IoT, desde el registro en la misma hasta la definición de los dispositivos
- y demás elementos.
-\end_layout
-
-\begin_layout Subsection
-Registro
-\end_layout
-
-\begin_layout Standard
-Amazon Web Services (AWS) ofrece un amplio rango de servicios de computación
- en la nube.
- Para cada servicio, el usuario debe abonar el precio correspondiente a
- los recursos requeridos.
- Aunque existen varias modalidades de facturación, todas ellas requieren
- que el usuario registre un método de pago.
- Sin embargo, existen dos alternativas 
-\begin_inset Quotes fld
-\end_inset
-
-libres de gastos
-\begin_inset Quotes frd
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Subsubsection
-AWS Free Tier
-\end_layout
-
-\begin_layout Standard
-Amazon establece un período de prueba gratuito para atraer nuevos clientes
- y dar a conocer su tecnología.
- En este período, es posible utilizar la mayoría de los servicios ofrecidos
- por AWS sin incurrir en gastos.
- No obstante, es necesario configurar un método de pago para comenzar a
- usar los servicios.
- Todos los detalles sobre AWS Free Tier están disponibles en 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-https://aws.amazon.com/free/
-\end_layout
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Configuración-de-AWSIoT"
 
 \end_inset
 
-.
-\end_layout
-
-\begin_layout Subsubsection
-AWS Educate
-\end_layout
-
-\begin_layout Standard
-AWS Educate proporciona a profesores y alumnos acceso a muchos de los servicios
- de AWS.
- Además, incluye ventajas como programas de capacitación y rutas profesionales
- en la nube de Amazon.
- Esta modalidad, que está disponible en 47 países, requiere que el usuario
- esté vinculado a alguna institución académica y procese una solicitud que
- será tratada de forma personalizada por Amazon
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-Deberá usarse el correo institucional en la solicitud.
-\end_layout
-
-\end_inset
-
-.
- Los detalles de esta modalidad están disponibles en 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-https://aws.amazon.com/education/
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-En la realización de este trabajo, hemos elegido esta segunda opción.
-\end_layout
-
-\begin_layout Subsection
-Acceso a la plataforma
-\end_layout
-
-\begin_layout Standard
-Una vez realizado el registro, accederemos a la plataforma de AWS siguiendo
- las instrucciones que recibiremos por e-mail.
- Si hemos creado una cuenta usando la modalidad AWS
+Configuración de AWS
 \begin_inset space ~
 \end_inset
 
-Educate, accederemos a la plataforma a través de la web 
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-https://www.awseducate.com/signin
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-Una vez que nos hayamos logueado en AWS, tendremos que dirigirnos al panel
- de control de AWS
-\begin_inset space ~
-\end_inset
-
-IoT.
- Para ello, haremos click en la pestaña 
-\begin_inset Quotes fld
-\end_inset
-
-Servicios
-\begin_inset Quotes frd
-\end_inset
-
- y buscaremos la opción 
-\emph on
 IoT
-\begin_inset space ~
-\end_inset
-
-Core
-\emph default
-, como se muestra en la figura
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Servicios-AWS"
-
-\end_inset
-
-.
- La primera vez que accedamos al servicio, nos encontraremos con el mensaje
- de bienvendia de la figura
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Bienvenida-AWS-IoT"
-
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename img/platform-01-services.png
-	lyxscale 50
-	width 100text%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Servicios-AWS"
-
-\end_inset
-
-Servicios disponibles en AWS.
- Buscaremos el servicio IoT
-\begin_inset space ~
-\end_inset
-
-Core.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement tb
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename img/platform-02-welcome.png
-	lyxscale 50
-	width 100text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Bienvenida-AWS-IoT"
-
-\end_inset
-
-Pantalla de bienvenida en la cosola de AWS
+En esta sección mostraremos los pasos a seguir para conectar un nuevo dispositiv
+o a la plataforma AWS
 \begin_inset space ~
 \end_inset
 
 IoT.
- Podemos acceder a los recursos didácticos presentados aquí en cualquier
- momento, a través de la pestaña 
-\emph on
-Learn
-\emph default
+ Para llevar a cabo esta configuración es necesario tener acceso a los servicios
+ de Amazon Web Services.
+ Los pasos necesarios para el primer acceso a AWS
+\begin_inset space ~
+\end_inset
+
+IoT, incluyendo el proceso de registro, están descritos en el Apéndice
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:Iniciación-a-AWS-IoT"
+
+\end_inset
+
 .
 \end_layout
 
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsection
-Configuración del dispositivo
+Creación y configuración del dispositivo
 \end_layout
 
 \begin_layout Standard
@@ -915,8 +1092,8 @@ reference "sec:Esquema-de-funcionamiento"
 \end_inset
 
 , para conectar el dispositivo tendremos que definirlo en la plataforma.
- También tendremos que asignarle un certificado digital y tomar nota de
- una serie de referencias.
+ También tendremos que asignarle un certificado digital y una política de
+ acceso.
 \end_layout
 
 \begin_layout Standard
@@ -926,10 +1103,6 @@ A continuación describimos los pasos necesarios para crear un dispositivo
 \end_inset
 
 IoT y definir lo parámetros necesarios.
-\end_layout
-
-\begin_layout Subsubsection
-Creación del dispositivo
 \end_layout
 
 \begin_layout Standard
@@ -961,38 +1134,52 @@ name "fig:Manage-Things"
 \end_inset
 
 Pestaña de administración de dispositivos (
-\emph on
+\family sans
 AWS
 \begin_inset space ~
 \end_inset
 
-Io
+IoT\SpecialChar menuseparator
+Manage\SpecialChar menuseparator
+Things).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Desde el panel inicial de AWS
+\begin_inset space ~
+\end_inset
+
+IoT (ver figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Bienvenida-AWS-IoT"
+
+\end_inset
+
+), nos dirigiremos a la pestaña 
 \family sans
 \lang english
-T\SpecialChar menuseparator
-Manage\SpecialChar menuseparator
-Things
-\emph default
-).
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-Para crear nuestro primer dispositivo, nos dirigiremos a la pestaña 
-\emph on
 Manage
-\emph default
+\family default
+\lang spanish
 , y ahí seleccionaremos 
-\emph on
+\family sans
+\lang english
 Things
-\emph default
+\family default
+\lang spanish
 .
- Nos encontraremos con la siguiente pantalla (figura
+ Nos encontraremos con la pantalla de la figura
 \begin_inset space ~
 \end_inset
 
@@ -1003,8 +1190,9 @@ reference "fig:Manage-Things"
 
 \end_inset
 
-), en la que pincharemos el botón 
-\emph on
+, en la que pincharemos el botón 
+\family sans
+\lang english
 Register
 \begin_inset space ~
 \end_inset
@@ -1014,7 +1202,8 @@ a
 \end_inset
 
 thing
-\emph default
+\family default
+\lang spanish
 .
 \end_layout
 
@@ -1057,7 +1246,8 @@ Opciones para el registro de dispositivos.
 \end_inset
 
 Seleccionaremos 
-\emph on
+\family sans
+\lang english
 Create
 \begin_inset space ~
 \end_inset
@@ -1071,7 +1261,8 @@ single
 \end_inset
 
 thing
-\emph default
+\family default
+\lang spanish
  (figura
 \begin_inset space ~
 \end_inset
@@ -1149,7 +1340,8 @@ reference "fig:form:thing-parameters"
 \begin_layout Standard
 Si no tenemos ningún tipo definido aún, podemos crearlo desde aquí, pinchando
  en el botón 
-\emph on
+\family sans
+\lang english
 Create
 \begin_inset space ~
 \end_inset
@@ -1159,7 +1351,8 @@ a
 \end_inset
 
 type
-\emph default
+\family default
+\lang spanish
 .
  Una vez creado el tipo, podremos seleccionarlo desde el menú desplegable.
  De esta forma, la sección de atributos visibles habrá quedado rellena.
@@ -1173,9 +1366,11 @@ Si deseamos que nuestro dispositivo cuente con atributos invisibles podemos
 \begin_layout Standard
 Una vez que hayamos terminado de definir nuestro dispositivo, pulsaremos
  el botón 
-\emph on
+\family sans
+\lang english
 Next
-\emph default
+\family default
+\lang spanish
 .
 \end_layout
 
@@ -1233,16 +1428,1253 @@ reference "fig:form:thing-type"
  Destacaremos aquí que estos atributos son siempre visibles.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsection
 Creación del certificado digital
 \end_layout
 
+\begin_layout Subsection
+Creación de una política
+\begin_inset space ~
+\end_inset
+
+de
+\begin_inset space ~
+\end_inset
+
+acceso (
+\lang english
+policy
+\lang spanish
+)
+\end_layout
+
 \begin_layout Section
-Conexión del dispositivo a la plataforma
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Montaje-del-dispositivo"
+
+\end_inset
+
+Montaje del dispositivo
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Configuración-de-NodeMCU"
+
+\end_inset
+
+Configuración del módulo NodeMCU
+\begin_inset space ~
+\end_inset
+
+Amica
+\end_layout
+
+\begin_layout Standard
+En esta sección mostraremos cómo programar el módulo 
+\emph on
+NodeMCU
+\begin_inset space ~
+\end_inset
+
+Amica
+\emph default
+ para que establezaca una comunicación con la plataforma AWS
+\begin_inset space ~
+\end_inset
+
+IoT.
+ Para lograrlo, es necesario tener instalado el IDE de Arduino, que deberá
+ disponer de la 
+\lang english
+toolchain
+\lang spanish
+ del ESP8266.
+ Los pasos necesarios para instalar esta 
+\lang english
+toolchain
+\lang spanish
+ están descritos en el Apéndice
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:Configuración-del-IDE"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Instalación de la biblioteca AWS-SDK-Arduino
+\end_layout
+
+\begin_layout Standard
+Amazon Web Services proporciona un SDK oficial para conectarse con AWS-IoT
+ desde cualquier dispositivo.
+ Este kit de desarrollo, denominado 
+\family sans
+AWS
+\begin_inset space ~
+\end_inset
+
+IoT
+\begin_inset space ~
+\end_inset
+
+Device
+\begin_inset space ~
+\end_inset
+
+SDK
+\family default
+, está escrito en el lenguaje de programación
+\begin_inset space ~
+\end_inset
+
+C y puede portarse a cualquier tipo de dispositivo.
+ Además, su código fuente está disponible en GitHub (
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/aws/aws-iot-device-sdk-embedded-C
+\end_layout
+
+\end_inset
+
+), de donde podemos descargarlo.
+ Toda la información acerca de 
+\family sans
+AWS
+\begin_inset space ~
+\end_inset
+
+IoT
+\begin_inset space ~
+\end_inset
+
+Device
+\begin_inset space ~
+\end_inset
+
+SDK
+\family default
+ está disponible en 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://aws.amazon.com/iot/sdk/
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Por desgracia, el kit de desarrollo oficial no está disponible para Arduino.
+ Por este motivo, usaremos como alternativa 
+\family sans
+AWS-SDK-Arduino
+\family default
+, una biblioteca experimental creada por 
+\emph on
+AWS
+\begin_inset space ~
+\end_inset
+
+Labs
+\emph default
+ y mantenida por la comunidad, cuyo objetivo es facilitar el acceso a los
+ servicios de AWS a partir de dispositivos compatibles con la plataforma
+ Arduino.
+ En concreto, usaremos la versión para el chip ESP8266, mantenida en forma
+ de biblioteca de Arduino por Roman Schmitz (
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/Schm1tz1/aws-sdk-arduino-esp8266
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Para instalar esta biblioteca, seguiremos el proceso de importación de ZIP
+ descrito en la web oficial de Arduino (
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www.arduino.cc/en/Guide/Libraries#toc4
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement th
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/device-04-github-aws-sdk-arduino.png
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:AWS-SDK-Arduino-GitHub"
+
+\end_inset
+
+Descarga de AWS-SDK-Arduino para ESP8266 desde GitHub.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+En primer lugar, descargaremos la biblioteca 
+\family sans
+AWS-SDK-Arduino
+\family default
+ para ESP8266 desde la web 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/Schm1tz1/aws-sdk-arduino-esp8266
+\end_layout
+
+\end_inset
+
+, como se indica en la figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:AWS-SDK-Arduino-GitHub"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement th
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/device-05-add-zip-library.png
+	lyxscale 60
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:add-zip-library"
+
+\end_inset
+
+Acceso a la ventana de importación de bibliotecas en ZIP en el IDE de Arduino.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Una vez descargada la biblioteca, podremos añadirla al IDE de Arduino accediendo
+ a la ventana de importación de bibliotecas en ZIP, a través del menú 
+\family sans
+\lang english
+Sketch\SpecialChar menuseparator
+Include
+\begin_inset space ~
+\end_inset
+
+Library\SpecialChar menuseparator
+Add
+\begin_inset space ~
+\end_inset
+
+.ZIP
+\begin_inset space ~
+\end_inset
+
+Library...
+
+\family default
+\lang spanish
+ (figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:add-zip-library"
+
+\end_inset
+
+).
+ Esta acción puede requerir que reiniciemos el IDE antes de poder usar la
+ biblioteca.
 \end_layout
 
 \begin_layout Chapter
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:DASHBOARD"
+
+\end_inset
+
 Visualización de los datos
+\end_layout
+
+\begin_layout Chapter
+\start_of_appendix
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:Iniciación-a-AWS-IoT"
+
+\end_inset
+
+Inicialización de AWS
+\begin_inset space ~
+\end_inset
+
+IoT
+\end_layout
+
+\begin_layout Standard
+En este apéndice trataremos el primer acceso a la plataforma AWS
+\begin_inset space ~
+\end_inset
+
+IoT.
+ Para ello, comenzaremos por registrarnos, ya que el uso de los servicios
+ de Amazon Web Services está restringido a usuarios registrados.
+\end_layout
+
+\begin_layout Section
+Registro
+\end_layout
+
+\begin_layout Standard
+Amazon Web Services (AWS) ofrece un amplio rango de servicios de computación
+ en la nube.
+ Para cada servicio, el usuario debe abonar el precio correspondiente a
+ los recursos requeridos.
+ Aunque existen varias modalidades de facturación, todas ellas requieren
+ que el usuario registre un método de pago.
+ Sin embargo, existen dos alternativas gratuitas.
+\end_layout
+
+\begin_layout Subsubsection
+AWS Free Tier
+\end_layout
+
+\begin_layout Standard
+Amazon establece un período de prueba gratuito para atraer nuevos clientes
+ y dar a conocer su tecnología.
+ En este período, es posible utilizar la mayoría de los servicios ofrecidos
+ por AWS sin incurrir en gastos.
+ No obstante, es necesario configurar un método de pago para comenzar a
+ usar los servicios.
+ Todos los detalles sobre AWS
+\begin_inset space ~
+\end_inset
+
+Free
+\begin_inset space ~
+\end_inset
+
+Tier están disponibles en 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://aws.amazon.com/free/
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+AWS Educate
+\end_layout
+
+\begin_layout Standard
+AWS Educate proporciona a profesores y alumnos acceso a muchos de los servicios
+ de AWS.
+ Además, incluye ventajas como programas de capacitación y rutas profesionales
+ en la nube de Amazon.
+ Esta modalidad, que está disponible en 47 países, requiere que el usuario
+ esté vinculado a alguna institución académica y procese una solicitud que
+ será tratada de forma personalizada por Amazon
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Deberá usarse el correo institucional en la solicitud.
+\end_layout
+
+\end_inset
+
+.
+ Los detalles de esta modalidad están disponibles en 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://aws.amazon.com/education/
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Nosotros hemos optado por esta segunda opción.
+\end_layout
+
+\begin_layout Section
+Acceso a la plataforma
+\end_layout
+
+\begin_layout Standard
+Una vez realizado el registro, accederemos a la plataforma de AWS siguiendo
+ las instrucciones que recibiremos por e-mail.
+ Si hemos creado una cuenta usando la modalidad AWS
+\begin_inset space ~
+\end_inset
+
+Educate, accederemos a la plataforma a través de la web 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www.awseducate.com/signin
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/platform-01-services.png
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Servicios-AWS"
+
+\end_inset
+
+Servicios disponibles en AWS.
+ Buscaremos el servicio 
+\family sans
+\lang english
+IoT
+\begin_inset space ~
+\end_inset
+
+Core
+\family default
+\lang spanish
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Una vez que nos hayamos logueado en AWS, tendremos que dirigirnos al panel
+ de control de AWS
+\begin_inset space ~
+\end_inset
+
+IoT.
+ Para ello, haremos click en la pestaña 
+\family sans
+\lang english
+Services
+\family default
+\lang spanish
+ y buscaremos la opción 
+\family sans
+\lang english
+IoT
+\begin_inset space ~
+\end_inset
+
+Core
+\family default
+\lang spanish
+, como se muestra en la figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Servicios-AWS"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement tb
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/platform-02-welcome.png
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Bienvenida-AWS-IoT"
+
+\end_inset
+
+Pantalla de bienvenida en la cosola de AWS
+\begin_inset space ~
+\end_inset
+
+IoT.
+ Podemos acceder a los recursos didácticos presentados aquí en cualquier
+ momento, a través de la pestaña 
+\family sans
+\emph on
+\lang english
+Learn
+\family default
+\emph default
+\lang spanish
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ La primera vez que accedamos al servicio, nos encontraremos con el mensaje
+ de bienvendia de la figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Bienvenida-AWS-IoT"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Usaremos el menú de la izquierda para acceder a las distintas opciones de
+ configuración y monitorización.
+\end_layout
+
+\begin_layout Chapter
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:Configuración-del-IDE"
+
+\end_inset
+
+Configuración del IDE de Arduino para ESP8266
+\end_layout
+
+\begin_layout Standard
+Para trabajar con la placa 
+\emph on
+NodeMCU
+\begin_inset space ~
+\end_inset
+
+Amica
+\emph default
+, tendremos que instalar la 
+\lang english
+toolchain
+\lang spanish
+ del módulo ESP8266.
+ Sin ella, no podremos compilar el código fuente que generemos ni podremos
+ subir el programa a la placa.
+ Por simplicidad, usaremos una 
+\emph on
+toolchain
+\emph default
+ basada en el IDE de Arduino.
+ Como ventaja adicional, cabe destacar la cantidad de recursos libres y
+ gratuitos que podemos encontrar 
+\emph on
+on-line
+\emph default
+, gracias a la gran comunidad de Arduino.
+\end_layout
+
+\begin_layout Section
+Instalación de la 
+\lang english
+toolchain
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+La comunicación entre el ESP8266 y el ordenador se lleva a cabo mediante
+ una interfaz serie virtual, que se consigue gracias al conversor 
+\emph on
+USB
+\begin_inset space ~
+\end_inset
+
+a
+\begin_inset space ~
+\end_inset
+
+UART
+\emph default
+ CP2102.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shaded
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Nota:
+\series default
+ La instalación de la 
+\lang english
+toolchain
+\lang spanish
+ asume que el IDE de Arduino está correctamente instalado en el ordenador
+ de trabajo.
+ Para obtener información sobre el proceso de instalación del IDE de Arduino,
+ nos referimos a la guía de iniciación en la web oficial de Arduino ( 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www.arduino.cc/en/Guide/HomePage
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hemos elegido ESP8266 en Arduino IDE.
+ Para instalarla, seguiremos los pasos indicados en 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/esp8266/Arduino#installing-with-boards-manager
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/device-01-preferences.png
+	lyxscale 60
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Preferences-Arduino-IDE"
+
+\end_inset
+
+Preferencias del IDE de Arduino con la URL del 
+\emph on
+ESP8266
+\begin_inset space ~
+\end_inset
+
+Arduino
+\begin_inset space ~
+\end_inset
+
+core
+\emph default
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Una vez instalado el IDE de Arduino, hay que entrar en 
+\family sans
+\lang english
+File\SpecialChar menuseparator
+Preferences
+\family default
+\lang spanish
+ y añadir la siguiente URL a 
+\family sans
+\lang english
+Additional
+\begin_inset space ~
+\end_inset
+
+Boards
+\begin_inset space ~
+\end_inset
+
+Manager
+\begin_inset space ~
+\end_inset
+
+URLs
+\family default
+\lang spanish
+ (figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Preferences-Arduino-IDE"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout LyX-Code
+http://arduino.esp8266.com/stable/package_esp8266com_index.json
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/device-02-menu.png
+	lyxscale 60
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:menu:boards-manager"
+
+\end_inset
+
+Acceso al gestor de placas a través de los menús (Arduino IDE).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+A continuación, accederemos al gestor de placas a través de 
+\family sans
+\lang english
+Tools\SpecialChar menuseparator
+Board\SpecialChar menuseparator
+Boards
+\begin_inset space ~
+\end_inset
+
+Manager...
+
+\family default
+\lang spanish
+ (figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:menu:boards-manager"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement th
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/device-02-boards-manager.png
+	lyxscale 60
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:boards-manager"
+
+\end_inset
+
+Gestor de placas (
+\family sans
+Boards
+\begin_inset space ~
+\end_inset
+
+Manager
+\family default
+) en el IDE de Arduino.
+ Podemos encontrar el paquete 
+\family sans
+esp8266
+\family default
+ fácilmente usando la barra de búsqueda.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Desde aquí podremos instalar el paquete 
+\family sans
+esp8266
+\family default
+, que encontraremos fácilmente ayudándonos de la barra de búsqueda (figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:boards-manager"
+
+\end_inset
+
+).
+ Este paquete da soporte a una gran variedad de placas que integran el chip
+ ESP8266, incluyendo 
+\emph on
+NodeMCU
+\begin_inset space ~
+\end_inset
+
+Amica
+\emph default
+.
+\end_layout
+
+\begin_layout Section
+Configuración de la 
+\lang english
+toolchain
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/device-03-select-board.png
+	lyxscale 60
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:menu:board-selection"
+
+\end_inset
+
+Acceso al gestor de placas a través de los menús (Arduino IDE).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Para que podamos compilar y subir el código correctamente, tendremos que
+ configurar la recién instalada 
+\lang english
+toolchain
+\lang spanish
+.
+ Para ello, nos aseguraremos que las opciones del menú 
+\family sans
+\lang english
+Tools
+\family default
+\lang spanish
+ son las indicadas en la figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:menu:board-selection"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+En concreto, nos fijaremos en las siguientes opciones:
+\end_layout
+
+\begin_layout Itemize
+
+\family sans
+\lang english
+Board:
+\family default
+\lang spanish
+ seleccionaremos 
+\family sans
+NodeMCU
+\begin_inset space ~
+\end_inset
+
+1.0
+\begin_inset space ~
+\end_inset
+
+(ESP-12E
+\begin_inset space ~
+\end_inset
+
+Module)
+\family default
+.
+\end_layout
+
+\begin_layout Itemize
+
+\family sans
+\lang english
+Upload
+\begin_inset space ~
+\end_inset
+
+Speed:
+\family default
+\lang spanish
+ seleccionaremos 
+\family sans
+115200
+\family default
+ baudios
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+La velocidad de transferencia por defecto de este módulo es 9600 baudios.
+ Sin embargo, es posible configurarlos con una velocidad superior.
+ Los dispositivos usados en la asignatura deberían estar configurados para
+ usar una velocidad de 115200 baudios.
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+
+\family sans
+\lang english
+Port:
+\family default
+\lang spanish
+ seleccionaremos el puerto de comunicación sere virtual asociado al dispositivo.
+ El nombre y número del puerto cambiarán dependiendo del sistema.
+\end_layout
+
+\begin_layout Standard
+El resto de opciones deberán permanecer en su valor por defecto.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Shaded
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Nota:
+\series default
+ Existe una multitud de circunstancias por las que el puerto podría no mostrarse
+ o no estar disponible.
+ Para solucionar este problema, podemos referirnos a la guía de solución
+ de problemas de Arduino (
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www.arduino.cc/en/Guide/Troubleshooting#toc16
+\end_layout
+
+\end_inset
+
+) o a las guías de iniciación (
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www.arduino.cc/en/Guide/Linux#toc6
+\end_layout
+
+\end_inset
+
+).
+ En el caso de que nuestro ordenador necesite un controlador específico
+ para establecer la comunicación con el chip CP2102, podemos descargarlo
+ los 
+\lang english
+drivers
+\lang spanish
+ desde 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-
+drivers
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
