@@ -176,14 +176,13 @@ Objetivos
 
 \begin_layout Standard
 El principal objetivo de este trabajo es construir y programar un dispositivo
- IoT, que enviará ciertas medidas a 
+ IoT, que tendrá la capacidad de comunicarse con 
 \emph on
 la nube
 \emph default
 .
- En concreto, el dispositivo contará con la capacidad de monitorizar la
- distancia de forma continua, transmitiendo los valores medidos a la nube
- de Amazon (
+ En concreto, el dispositivo monitorizará la distancia de forma continua,
+ transmitiendo los valores medidos a la nube de Amazon (
 \emph on
 Amazon
 \begin_inset space ~
@@ -214,7 +213,7 @@ ESP8266
 \emph on
 US-100
 \emph default
-.
+, que conectaremos ayudándonos de una placa de prototipado.
 \end_layout
 
 \begin_layout Standard
@@ -229,12 +228,15 @@ IoT
 \emph default
 ).
  La comunicación entre el dispositivo y la nube se llevará a cabo a través
- del protocolo MQTT, tras haber establecido un canal seguro mediante TLS.
+ del protocolo HTTP, tras haber establecido un canal seguro mediante TLS.
 \end_layout
 
 \begin_layout Standard
-Finalmente, visualizaremos los datos con un panel de control (dashboard)
- basado en ###.
+Finalmente, visualizaremos los datos con un panel de control (
+\lang english
+dashboard
+\lang spanish
+) basado en ###.
  De esta forma, contaremos con un sistema IoT completamente funcional.
 \end_layout
 
@@ -244,7 +246,58 @@ Kit de desarrollo
 
 \begin_layout Standard
 Para la realización de este trabajo contamos con un kit de desarrollo que
- contiene los siguientes elementos.
+ contiene los siguientes elementos (figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Kit-de-desarrollo"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/device-00-kit-v2.jpg
+	lyxscale 10
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Kit-de-desarrollo"
+
+\end_inset
+
+Kit de desarrollo de la asignatura Internet de las Cosas.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Description
@@ -255,7 +308,7 @@ NodeMCU
 Amica será el cerebro de nuestro dispositivo.
  Contiene el módulo ESP8266, que programaremos para establecer la comunicación
  con la nube a través de una conexión Wi-Fi.
- Más información en 
+ Más información sobre esta placa en 
 \begin_inset Flex URL
 status open
 
@@ -270,8 +323,8 @@ http://espressif.com/en/products/esp8266/
 \end_layout
 
 \begin_layout Description
-US-100 es el sensor que medirá la distancia a petición de nuestro programa
- en el ESP8266.
+US-100 este sensor de ultrasonidos medirá la distancia a petición de nuestro
+ programa en el ESP8266.
  
 \end_layout
 
@@ -333,61 +386,6 @@ cables
 \end_inset
 
 puente necesarios para interconectar el módulo ESP8266 con el sensor US-100.
-\end_layout
-
-\begin_layout Standard
-Podemos observar los elementos previamente descritos en la figura
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Kit-de-desarrollo"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename img/device-00-kit-v2.jpg
-	lyxscale 10
-	width 100text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Kit-de-desarrollo"
-
-\end_inset
-
-Kit de desarrollo de la asignatura Internet de las Cosas.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Section
@@ -512,12 +510,26 @@ Amazon Web Services IoT
 
 \begin_layout Standard
 En esta sección describimos la arquitectura de la plataforma de Amazon para
- Internet de las Cosas, explorando su potencial y las particularidades que
- presenta.
+ Internet de las Cosas (AWS
+\begin_inset space ~
+\end_inset
+
+IoT), explorando su potencial y las particularidades que presenta.
 \end_layout
 
 \begin_layout Standard
-Como se describe en #missing reference#, AWS
+Como se describe en 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://docs.aws.amazon.com/iot/latest/developerguide/what-is-aws-iot.html
+\end_layout
+
+\end_inset
+
+, AWS
 \begin_inset space ~
 \end_inset
 
@@ -525,8 +537,8 @@ IoT proporciona una
 \emph on
 comunicación bidireccional segura
 \emph default
- entre dispositivos conectados a Internet, como sensores, actuadores, microcontr
-oladores embebidos o electrodomésticos inteligentes y la nube de Amazon
+ entre dispositivos conectados a Internet (ya sean sensores, actuadores,
+ microcontroladores, electrodomésticos inteligentes, etc.) y la nube de Amazon
  (
 \emph on
 AWS
@@ -536,10 +548,10 @@ AWS
 Cloud
 \emph default
 ).
- Esto nos permite recoger y almacenar y analizar datos de una gran variedad
+ Esto nos permite recoger, almacenar y analizar datos de una gran variedad
  de dispositivos.
- Del mismo modo, nos permite crear aplicaciones que permitan controlar estos
- dispositivos a través de un 
+ Del mismo modo, nos permite crear aplicaciones para controlar estos dispositivo
+s a través de un 
 \emph on
 smartphone
 \emph default
@@ -551,8 +563,12 @@ tablet
 \end_layout
 
 \begin_layout Standard
-En este sentido, AWS IoT actúa como una pasarela a la cuál pueden conectarse
- tanto dispositivos como aplicaciones de terceros.
+En este sentido, AWS
+\begin_inset space ~
+\end_inset
+
+IoT actúa como una pasarela a la cuál pueden conectarse tanto dispositivos
+ como aplicaciones de terceros.
  Además, ofrece una interfaz sencilla para procesar los datos recogidos
  a través de los demás servicios de AWS.
  Este modo de operación hace que Amazon se haya esforzado en proporcionar
@@ -779,7 +795,11 @@ shadow
 \end_layout
 
 \begin_layout Standard
-AWS IoT dispone de otros componentes y servicios con los que el desarrollador
+AWS
+\begin_inset space ~
+\end_inset
+
+IoT dispone de otros componentes y servicios con los que el desarrollador
  puede interactuar para realizar tareas específicas.
  No obstante, su uso es más avanzado y queda fuera de los objetivos de este
  documento.
@@ -790,7 +810,11 @@ Cabe mencionar que tanto el agente de mensajes como el motor de reglas utilizan
  las características de seguridad de AWS para enviar datos de forma segura
  a dispositivos u otros servicios de AWS.
  De este modo, tan solo los dispositivos convenientemente autorizados pueden
- establecer una comunicación con AWS IoT.
+ establecer una comunicación con AWS
+\begin_inset space ~
+\end_inset
+
+IoT.
 \end_layout
 
 \begin_layout Section
@@ -804,7 +828,15 @@ Esquema de funcionamiento
 \end_layout
 
 \begin_layout Standard
-Dispositivo físico ejecutando la AWS
+El esquema de funcionamiento de AWS
+\begin_inset space ~
+\end_inset
+
+IoT es el siguiente.
+\end_layout
+
+\begin_layout Standard
+Por un lado, tendremos un dispositivo físico ejecutando la AWS
 \begin_inset space ~
 \end_inset
 
@@ -813,19 +845,96 @@ IoT
 \end_inset
 
 SDK.
- Debe disponer de un certificado digital que lo autentique y del CA necesario
- para autenticar AWS.
+ Este dispositivo debe disponer de unas credenciales con las que se identificará
+ y se autenticará ante la Nube.
+ En general, estas credenciales vienen dadas por un certificado digital.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+y el CA necesario para autenticar AWS!!
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Por otro lado, tendremos que definir este dispositivo en la plataforma,
- usando la 
+Por otro lado, tendremos que definir el dispositivo en la plataforma, usando
+ el Servicio de registro (
+\lang english
+Registry
+\lang spanish
+) anteriormente descrito.
+ Este dispositivo virtual dispondrá de un 
 \emph on
-herramienta de registro
+nombre único
 \emph default
-.
- Este dispositivo virtual tendrá que tener asociado un certificado digital
- válido (el mismo que el del dispositivo).
+, que servirá para identificarlo, y de unos 
+\emph on
+atributos estáticos
+\emph default
+ a modo de descripción.
+ De forma adicional, el dispositivo puede ser de un tipo determinado que
+ hayamos definido previamente y puede tener un certificado asociado.
+ En general, el dispositivo virtual tendrá asociado el mismo certificado
+ digital que instalemos en el dispositivo físico, de forma que AWS
+\begin_inset space ~
+\end_inset
+
+IoT pueda autenticarlo.
+ Este certificado digital puede tener asociada una o varias Políticas de
+ uso (
+\lang english
+Policies
+\lang spanish
+).
+ Gracias a estas políticas de uso, distintos dispositivos tendrán permisos
+ para realizar distintas acciones (como publicar o suscribirse en determinados
+ topics, actualizar su sombra, etc.).
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Shaded
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\family sans
+\series bold
+\size small
+Nota:
+\series default
+ Los Atributos estáticos sirven para describir los dispositivos, y su función
+ no debe confundirse con la de la Sombra del dispositivo (Device shadow).
+ Mientras que la sombra es un documento dinámico que contiene valores de
+ sensores y de actuadores, estos atributos se almacenan de forma estática
+ en el Registro.
+ Algunos ejemplos de atributos son: número de serie, versión de firmware
+ y descripción del sensor.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -849,13 +958,11 @@ Intercambio de mensajes MQTT/HTTP.
 \end_layout
 
 \begin_layout Standard
-Cuando la plataforma recibe un mensaje MQTT válido, lo procesa convenientemente.
- Si este mensaje se corresponde a algún parámetro asociado al dispositivo
- virtual, 
-\color red
-actualiza su sombra
-\color inherit
-.
+Cuando la plataforma recibe un mensaje MQTT válido, lo procesa convenientemente,
+ reenviándolo a todos los dispositivos suscritos al topic.
+ Existen topics especiales con los que los dispositivos pueden actualizar
+ su sombra (la sintaxis debe ser la adecuada).
+ 
 \end_layout
 
 \begin_layout Standard
@@ -963,7 +1070,11 @@ AWS Greengrass
 \end_layout
 
 \begin_layout Standard
-AWS Greengrass es una nueva tecnología de Amazon, independiente a AWS IoT.
+AWS Greengrass es una nueva tecnología de Amazon, independiente a AWS
+\begin_inset space ~
+\end_inset
+
+IoT.
  Este servicio nos permite almacenar los datos generados por un grupo de
  dispositivos en la red local, optimizando el uso de la red y permitiendo
  ejecutar acciones de forma local.
@@ -988,12 +1099,18 @@ Core
 .
  Definiremos tanto la arquitectura del Greengrass Group como los disparadores
  asociados a los distintos eventos de forma segura en la plataforma AWS
- Greengrass.
+\begin_inset space ~
+\end_inset
+
+Greengrass.
  De esta manera, la publicación y recepción de mensajes y las reglas quedan
  definidas en la nube.
  Una vez concluida la configuración, su despliegue en el la red de área
- local es tan simple como sincronizar el Greengrass Core, que pasará a adoptar
- la configuración definida en la nube.
+ local es tan simple como sincronizar el Greengrass
+\begin_inset space ~
+\end_inset
+
+Core, que pasará a adoptar la configuración definida en la nube.
  Como resultado, el grupo de dispositivos es capaz de almacenar los datos
  y procesarlos a pesar de que la conexión a Internet sea intermitente, permitien
 do una respuesta rápida a los eventos y optimizando los recursos de red.
@@ -1102,7 +1219,7 @@ A continuación describimos los pasos necesarios para crear un dispositivo
 \begin_inset space ~
 \end_inset
 
-IoT y definir lo parámetros necesarios.
+IoT y definir los parámetros necesarios.
 \end_layout
 
 \begin_layout Standard
@@ -1155,7 +1272,7 @@ Desde el panel inicial de AWS
 \begin_inset space ~
 \end_inset
 
-IoT (ver figura
+IoT (figura
 \begin_inset space ~
 \end_inset
 
@@ -1329,7 +1446,17 @@ reference "fig:form:thing-parameters"
 
 ).
  Para empezar, tendremos que darle un nombre a nuestro dispositivo.
- Aunque este es el único campo requerido, también será conveniente asignarle
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+mencionar qué son los atributos!!
+\end_layout
+
+\end_inset
+
+Aunque este es el único campo requerido, también será conveniente asignarle
  un tipo al dispositivo.
  Esto nos permitirá tener una serie de atributos que habremos asociado a
  este tipo.
@@ -2144,6 +2271,7 @@ UART
 \end_layout
 
 \begin_layout Standard
+\align center
 \begin_inset Box Shaded
 position "t"
 hor_pos "c"
@@ -2151,7 +2279,7 @@ has_inner_box 1
 inner_pos "t"
 use_parbox 0
 use_makebox 0
-width "100col%"
+width "95col%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -2164,7 +2292,9 @@ status open
 
 \begin_layout Plain Layout
 
+\family sans
 \series bold
+\size small
 Nota:
 \series default
  La instalación de la 
@@ -2602,6 +2732,7 @@ El resto de opciones deberán permanecer en su valor por defecto.
 \end_layout
 
 \begin_layout Standard
+\align center
 \begin_inset Box Shaded
 position "t"
 hor_pos "c"
@@ -2609,7 +2740,7 @@ has_inner_box 1
 inner_pos "t"
 use_parbox 0
 use_makebox 0
-width "100col%"
+width "95col%"
 special "none"
 height "1in"
 height_special "totalheight"
@@ -2622,7 +2753,9 @@ status open
 
 \begin_layout Plain Layout
 
+\family sans
 \series bold
+\size small
 Nota:
 \series default
  Existe una multitud de circunstancias por las que el puerto podría no mostrarse
@@ -2654,9 +2787,9 @@ https://www.arduino.cc/en/Guide/Linux#toc6
  En el caso de que nuestro ordenador necesite un controlador específico
  para establecer la comunicación con el chip CP2102, podemos descargarlo
  los 
-\lang english
+\emph on
 drivers
-\lang spanish
+\emph default
  desde 
 \begin_inset Flex URL
 status open
