@@ -58,7 +58,7 @@
 \pdf_backref false
 \pdf_pdfusetitle true
 \pdf_quoted_options "linkcolor={black}, urlcolor={blue}"
-\papersize default
+\papersize a4paper
 \use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
@@ -1585,6 +1585,40 @@ name "sec:Montaje-del-dispositivo"
 Montaje del dispositivo
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/circuit__bb.pdf
+	width 90text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Esquema del montaje del circuito en la placa de prototipado.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 \begin_inset CommandInset label
 LatexCommand label
@@ -2760,14 +2794,16 @@ Nota:
 \series default
  Existe una multitud de circunstancias por las que el puerto podría no mostrarse
  o no estar disponible.
- Para solucionar este problema, podemos referirnos a la guía de solución
+ Para solucionar este problema, podemos referirnos a la guíaa de solución
  de problemas de Arduino (
 \begin_inset Flex URL
 status open
 
 \begin_layout Plain Layout
 
-https://www.arduino.cc/en/Guide/Troubleshooting#toc16
+https://www.arduino.cc/en/Guide/Troubleshooting
+\backslash
+#toc16
 \end_layout
 
 \end_inset
@@ -2778,18 +2814,20 @@ status open
 
 \begin_layout Plain Layout
 
-https://www.arduino.cc/en/Guide/Linux#toc6
+https://www.arduino.cc/en/Guide/Linux
+\backslash
+#toc6
 \end_layout
 
 \end_inset
 
 ).
  En el caso de que nuestro ordenador necesite un controlador específico
- para establecer la comunicación con el chip CP2102, podemos descargarlo
- los 
-\emph on
+ para establecer la comunicación con el chip CP2102, podemos descargar los
+ 
+\lang english
 drivers
-\emph default
+\lang spanish
  desde 
 \begin_inset Flex URL
 status open
