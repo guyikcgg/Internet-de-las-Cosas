@@ -25,6 +25,10 @@
 \renewcommand{\foreignlanguage}[2]{\emph{\oldforeignlanguage{#1}{#2}}}
 
 \usepackage{ccicons}
+
+\usepackage{color}
+
+\definecolor{myred}{rgb}{0.6,0.05,0}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -97,6 +101,7 @@
 \papercolumns 1
 \papersides 2
 \paperpagestyle default
+\listings_params "language=C,stringstyle={\color{myred}}"
 \tracking_changes false
 \output_changes false
 \html_math_output 0
@@ -107,7 +112,15 @@
 \begin_body
 
 \begin_layout Title
+Conexión del módulo ESP8266 a la plataforma
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
 Amazon Web Services IoT
+\series default
+
 \begin_inset Newline newline
 \end_inset
 
@@ -172,7 +185,7 @@ thispagestyle{empty}
 \noindent
 
 \emph on
-Uso de la plataforma Amazon Web Services IoT para el TODO ###
+Conexión del módulo ESP8266 a la plataforma Amazon Web Services IoT
 \end_layout
 
 \begin_layout Standard
@@ -341,23 +354,28 @@ Introducción
 \end_layout
 
 \begin_layout Standard
-Este documento presenta ...
+El enorme crecimiento esperado para el denominado 
+\emph on
+Internet de las Cosas
+\emph default
+ (IoT) ha despertado el interés de las grandes empresas de Internet, que
+ ahora se disputan el estándar 
+\emph on
+de facto
+\emph default
+ de esta nueva tecnología.
+ En este trabajo presentamos un ejemplo de conexión de un dispositivo sensor
+ a la plataforma de Amazon AWS
+\begin_inset space ~
+\end_inset
+
+IoT, al tratarse esta de una de las más usadas por las empresas que actualmente
+ intentan abrirse mercado en el paradigma IoT.
 \end_layout
 
 \begin_layout Standard
-Internet de las Cosas es guay...
-\end_layout
-
-\begin_layout Standard
-prueba de ello es el gran crecimiento....
- y la multitud de plataformas IoT disponibles.
- En este trabajo, conectaremos un dispositivo IoT a una de estas plataformas.
- ###
-\end_layout
-
-\begin_layout Standard
-El código fuente de este documento, así como los ejemplos usados en el mismo
- pueden encontrase en 
+El código fuente de este documento, así como el de los ejemplos usados en
+ el mismo pueden encontrase en 
 \begin_inset Flex URL
 status open
 
@@ -437,7 +455,7 @@ Finalmente, visualizaremos los datos con un panel de control (
 \lang english
 dashboard
 \lang spanish
-) basado en ###.
+) basado en Charts.js.
  De esta forma, contaremos con un sistema IoT completamente funcional.
 \end_layout
 
@@ -696,7 +714,7 @@ reference "chap:DASHBOARD"
 \lang english
 dashboard
 \lang spanish
-) basado en ###.
+) basado en Charts.js y Bootstrap.
 \end_layout
 
 \begin_layout Chapter
@@ -783,17 +801,15 @@ IoT cuenta con un panel de control relativamente complejo, que nos permitirá
  gestionar una multitud de opciones.
  No obstante, esta plataforma no proporciona por sí misma herramientas para
  representar los datos obtenidos.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Usaremos ### como alternativa.
-\end_layout
-
-\end_inset
-
-
+ Usaremos una aplicación web basada en 
+\emph on
+Charts.js
+\emph default
+ y 
+\emph on
+Bootstrap
+\emph default
+ como alternativa.
 \end_layout
 
 \begin_layout Section
@@ -1096,17 +1112,17 @@ AWS
 \end_inset
 
 IoT dispone de otros componentes y servicios con los que el desarrollador
- puede interactuar para realizar tareas específicas.
+ puede interactuar para realizar algunas tareas de interés, como actualizar
+ el firmware de sus dispositivos de forma remota, por ejemplo.
  No obstante, su uso es más avanzado y queda fuera de los objetivos de este
  documento.
 \end_layout
 
 \begin_layout Standard
 Cabe mencionar que tanto el agente de mensajes como el motor de reglas utilizan
- las características de seguridad de AWS para enviar datos de forma segura
- a dispositivos u otros servicios de AWS.
- De este modo, tan solo los dispositivos convenientemente autorizados pueden
- establecer una comunicación con AWS
+ las características de seguridad de AWS.
+ De este modo, los dispositivos y aplicaciones convenientemente autorizados
+ pueden establecer una comunicación con AWS
 \begin_inset space ~
 \end_inset
 
@@ -1135,7 +1151,7 @@ un poco de blabla: ahora que conocemos los elementos básicos de la plataforma,
 
 \end_inset
 
-El esquema de funcionamiento de AWS
+El esquema general de funcionamiento de AWS
 \begin_inset space ~
 \end_inset
 
@@ -1143,7 +1159,13 @@ IoT es el siguiente.
 \end_layout
 
 \begin_layout Standard
-Por un lado, tendremos un dispositivo físico ejecutando la AWS
+Por un lado, tendremos un dispositivo físico ejecutando el 
+\emph on
+kit de desarrollo de software del dispositivo
+\emph default
+ (
+\lang english
+AWS
 \begin_inset space ~
 \end_inset
 
@@ -1151,21 +1173,23 @@ IoT
 \begin_inset space ~
 \end_inset
 
-SDK.
- Este dispositivo debe disponer de unas credenciales con las que se identificará
- y se autenticará ante la Nube.
- En general, estas credenciales vienen dadas por un certificado digital.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-y el CA necesario para autenticar AWS!!
-\end_layout
-
+Device
+\begin_inset space ~
 \end_inset
 
-
+SDK
+\lang spanish
+).
+ Este dispositivo debe disponer de unas credenciales con las que se identificará
+ y se autenticará ante la Nube.
+ En general, estas credenciales vienen dadas por un certificado digital
+ único para cada dispositivo.
+ De forma dicional, el dispositivo debe incluir el certificado raíz de autoridad
+ certificadora (
+\lang english
+CA root certificate
+\lang spanish
+) para autenticar los servidores de Amazon.
 \end_layout
 
 \begin_layout Standard
@@ -1199,16 +1223,8 @@ Policies
 \lang spanish
 ).
  Gracias a estas políticas de uso, distintos dispositivos tendrán permisos
- para realizar distintas acciones (como publicar o suscribirse en determinados
- topics, actualizar su sombra, etc.).
-\end_layout
-
-\begin_layout Subsection
-Sombra del dispositivo
-\end_layout
-
-\begin_layout Standard
-reported vs desired
+ para realizar distintas acciones, como puede ser publicar o suscribirse
+ en determinados topics, actualizar su sombra, etc.
 \end_layout
 
 \begin_layout Standard
@@ -1240,16 +1256,176 @@ Nota:
 \series default
  Los Atributos estáticos sirven para describir los dispositivos, y su función
  no debe confundirse con la de la Sombra del dispositivo (Device shadow).
- Mientras que la sombra es un documento dinámico que contiene valores de
- sensores y de actuadores, estos atributos se almacenan de forma estática
- en el Registro.
+ Estos atributos se almacenan de forma estática en el Registro.
  Algunos ejemplos de atributos son: número de serie, versión de firmware
  y descripción del sensor.
+ Los valores de sensores y de actuadores se almacenan en un documento dinámico
+ denominado 
+\emph on
+sombra del dispositivo
+\emph default
+.
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Sombra del dispositivo
+\end_layout
+
+\begin_layout LyX-Code
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "shadow.json"
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:Ejemplo-de-sombra"
+
+\end_inset
+
+Ejemplo de sombra de dispositivo.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+El estado actual del dispositivo se guarda en un fichero JSON especial denominad
+o sombra del dispositivo (
+\lang english
+device shadow
+\lang spanish
+).
+ La sombra del dispositivo actúa como un intermediario entre dispositivos
+ y aplicaciones, permitiendo que ambas partes tengan acceso el estado del
+ dispositivo, pudiendo actualizarlo.
+ Para que el estado del dispositivo pueda ser modificado por las aplicaciones,
+ cada parámetro definido en la sombra podrá estar bajo una de las siguientes
+ categorías:
+\end_layout
+
+\begin_layout Standard
+Bajo la categoría reported tendremos un informe del estado confeccionado
+ por el dispositivo.
+ De este modo, podemos decir que los parámetros encontrados en esta categoría
+ tienen un significado informativo del estado del dispositivo, y solo el
+ dispositivo debería escribir en ellos.
+ Es en esta sección donde encontraremos los valores de los sensores.
+\end_layout
+
+\begin_layout Standard
+En la categoría desired, en cambio, tendremo instrucciones para el dispositivo,
+ como el cambio de color de un LED o el accionamiento de un motor.
+ Como puede intuirse ya, esta categoría es confeccionada por la aplicación,
+ debiendo ser revisada por el dispositivo para ejecutar las acciones solicitadas.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/AWS_IoT_Shadow_Flow.png
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Flujo-de-mensajes-sombra"
+
+\end_inset
+
+Flujo de mensajes en la iinteracción entre el dispositivo y una aplicación
+ a través de la sombra.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Flujo-de-mensajes-sombra"
+
+\end_inset
+
+ muestra el flujo de mensajes intercambiados entre el dispositivo y la aplicació
+n, usando la sombra de intermediario.
+\end_layout
+
+\begin_layout Standard
+Una ventaja de la existencia de la sombra del dispositivo con respecto a
+ otras implementaciones es que puede conocerse el estado del dispositivo
+ aunque este se encuentre sin conexión.
+ Evidentemente, en este caso no contaremos con el estado actualizado, pero
+ podremos visualizar el último estado registrado.
+ Además, la sombra cuenta con una serie de metadatos, en los que se incluye
+ un sello temporal con la última actualización en cada una de las direcciones.
+ Del mismo modo, será posible enviar instrucciones a nuestro dispositivo
+ sea cual sea su conectividad.
+\end_layout
+
+\begin_layout Standard
+El algoritmo
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:Ejemplo-de-sombra"
+
+\end_inset
+
+ muestra un ejemplo sencillo de sombra de dispositivo, en el que la aplicación
+ requiere un cambio de color en el LED del dispositivo.
 \end_layout
 
 \begin_layout Subsection
@@ -1257,110 +1433,252 @@ Esquema de conexión
 \end_layout
 
 \begin_layout Standard
-Como en cualquier esquema IoT, nuestro dispositivo se comunicará con la
- plataforma a través de una conexión a Internet.
+Como en cualquier esquema IoT, el dispositivo se comunicará con la plataforma
+ a través de una conexión a Internet.
  En el caso de AWS
 \begin_inset space ~
 \end_inset
 
 IoT, la comunicación se lleva a cabo a través del protocolo MQTT, sobre
  un canal seguro TLS.
- Para llevar a cabo la conexión con AWS
+ Esta conexión se produce en varios pasos:
+\end_layout
+
+\begin_layout Standard
+En primer lugar, el dispositivo inicia una comunicación segura TLS con el
+ servidor de AWS
 \begin_inset space ~
 \end_inset
 
-IoT, el dispositivo deberá ejecutar algunas de las funciones disponibles
- en el 
-\emph on
-kit de desarrollo de software del dispositivo
-\emph default
- (
+IoT, asumiendo el rol de cliente.
+ En esta primera comunicación servidor y cliente intercambian y verifican
+ el certificado digital de la otra parte.
+ De esta forma, la plataforma identifica y autentica el dispositivo, y el
+ dispositivo se asegura de la autenticidad del servidor.
+ En este proceso se establece una clave con la que se encriptarán todos
+ los mensajes.
+\end_layout
+
+\begin_layout Standard
+Una vez establecida la comunicación segura, el dispositivo puede publicar
+ mensajes siguiendo el protocolo MQTT.
+ Cuando el dispositivo trata de publicar un mensaje en un 
 \lang english
-Device
+topic
+\lang spanish
+, la plataforma verifica si este tiene permiso para publicar en dicho 
+\lang english
+topic
+\lang spanish
+.
+ En caso afirmativo, el message
 \begin_inset space ~
 \end_inset
 
-SDK
+broker retransmite este mensaje a cualquier elemento de la red suscrito
+ a este topic.
+ Del mismo modo, el dispositivo puede suscribirse a cualquier 
+\lang english
+topic
 \lang spanish
-).
- 
+ simpre y cuando tenga permisos para ello.
+\end_layout
+
+\begin_layout Subsubsection
+Actualización de la sombra
 \end_layout
 
 \begin_layout Standard
-A la hora de conectarse:
+La actualización de la sombra se lleva a cabo publicando mensajes en unos
+ topics especiales, destinados a este fin.
+ En concreto, están definidos los siguientes 
+\lang english
+topics
+\lang spanish
+, donde el dispositivo queda identificado por la variable 
+\family typewriter
+thingName
+\family default
+.
 \end_layout
 
-\begin_layout Enumerate
-El dispositivo, que actuará con el rol de cliente, inicia una comunicación
- segura TLS con el servidor de AWS IoT seleccionado.
+\begin_layout Description
+
+\family typewriter
+$aws/things/thingName/shadow/update
+\family default
+ Tanto las aplicaciones como los dispositivos pueden publicar mensajes a
+ este 
+\lang english
+topic
+\lang spanish
+ para actualizar la sombra.
 \end_layout
 
-\begin_layout Enumerate
-Servidor y cliente intercambian y verifican el certificado digital de la
- otra parte, asegurándose la autenticidad de los extremos.
- Terminado este paso, dispositivo y plataforma se comunican de forma segura,
- cifrando los mensajes con una clave establecida para la sesión.
+\begin_layout Description
+
+\family typewriter
+$aws/things/thingName/update/accepted
+\family default
+ AWS
+\begin_inset space ~
+\end_inset
+
+IoT publica un mensaje en este 
+\lang english
+topic
+\lang spanish
+ para confirmar la actualización de la sombra.
 \end_layout
 
-\begin_layout Enumerate
-Intercambio de mensajes MQTT/HTTP.
+\begin_layout Description
+
+\family typewriter
+$aws/things/thingName/update/rejected
+\family default
+ AWS
+\begin_inset space ~
+\end_inset
+
+IoT publica un mensaje en este 
+\lang english
+topic
+\lang spanish
+ para indicar que la actualización de la sombra no tuvo éxito.
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+$aws/things/thingName/get
+\family default
+ Tanto las aplicaciones como los dispositivos pueden publicar un mensaje
+ vacío a este 
+\lang english
+topic
+\lang spanish
+ para obtener la sombra.
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+$aws/things/thingName/get/accepted
+\family default
+ AWS
+\begin_inset space ~
+\end_inset
+
+IoT publica un mensaje en este 
+\lang english
+topic
+\lang spanish
+ para con la sombra actual.
+\end_layout
+
+\begin_layout Description
+
+\family typewriter
+$aws/things/thingName/get/rejected
+\family default
+ AWS
+\begin_inset space ~
+\end_inset
+
+IoT publica un mensaje de error en este 
+\lang english
+topic
+\lang spanish
+ para indicar que no se pudo recuperar la sombra.
 \end_layout
 
 \begin_layout Standard
-Cuando la plataforma recibe un mensaje MQTT válido, lo procesa convenientemente,
- reenviándolo a todos los dispositivos suscritos al topic.
- Existen topics especiales con los que los dispositivos pueden actualizar
- su sombra (la sintaxis debe ser la adecuada).
- 
+De forma adicional, existen otros 
+\lang english
+topics
+\lang spanish
+ especiales relacionados con la sombra, cuyo uso es más avanzado.
+\end_layout
+
+\begin_layout Subsubsection
+RESTful API
 \end_layout
 
 \begin_layout Standard
+AWS
+\begin_inset space ~
+\end_inset
 
-\color red
-Certificate ARN
+IoT dispone de una API RESTful para permitir que las aplicaciones puedan
+ conectarse e interactuar con la sombra a través del protocolo HTTPS.
+ En este caso, la seguridad es similar a la llevada a cabo en el caso del
+ dispositivo.
+ La diferencia es que la aplicación puede tener una credencial basada en
+ una tupla (ID,
+\begin_inset space ~
+\end_inset
+
+clave) en vez de un certificado.
 \end_layout
 
 \begin_layout Standard
+Para interaccionar con la sombra, la aplicación debe conectarse con la siguiente
+ URL:
+\end_layout
 
-\color red
-A certificate ARN uniquely identifies a certificate in AWS.
- You can use this ARN to interact with this certificate through CLI and
- other methods.
- 
+\begin_layout LyX-Code
+https://
+\color brown
+endpoint
+\color inherit
+/things/
+\color brown
+thingName
+\color inherit
+/shadow
 \end_layout
 
 \begin_layout Standard
+donde 
+\family typewriter
+thingName
+\family default
+ es el nombre que identifica al dispositivo, y 
+\family typewriter
+endpoint
+\family default
+ tiene la forma mostrada a continuación.
+\end_layout
 
-\color red
-arn:aws:iot:us-west-2:552719360781:cert/c1a1b8ee69b533eb10a38908d9e7cf0b41b33987
-1111955c0336e94c4fe5a56d
+\begin_layout LyX-Code
+
+\color brown
+identifier
+\color inherit
+.iot.
+\color brown
+region
+\color inherit
+.amazonaws.com
 \end_layout
 
 \begin_layout Standard
+Este endpoint puede ser consultado en la consola de AWS
+\begin_inset space ~
+\end_inset
 
-\color red
-Thing ARN
-\end_layout
+IoT, como haremos en el capítulo
+\begin_inset space ~
+\end_inset
 
-\begin_layout Standard
 
-\color red
-A thing Amazon Resource Name uniquely identifies this thing.
- 
-\end_layout
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:CONECTION"
 
-\begin_layout Standard
+\end_inset
 
-\color red
-arn:aws:iot:us-west-2:552719360781:thing/test_0
-\end_layout
-
-\begin_layout Subsection
-Special topics
-\end_layout
-
-\begin_layout Standard
-Reenvío de la sombra a topics especiales
+.
 \end_layout
 
 \begin_layout Section
@@ -1368,20 +1686,25 @@ Disparadores y reglas
 \end_layout
 
 \begin_layout Standard
-AWS IoT permite definir reglas con las que pueden realizarse diversas acciones
+AWS
+\begin_inset space ~
+\end_inset
+
+IoT permite definir reglas con las que pueden realizarse diversas acciones
  al detectar eventos determinados.
- De este modo, la podemos indicarle a la plataforma que realice las acciones
- necesarias cuando se produzca un evento determinado en cualquiera de los
- dispositivos definidos.
- Estos eventos incluyen la superación de un umbral en un parámetro o la
- aparición de un valor o atributo determinado en un 
-\emph on
+ De este modo, es posible redireccionar mensajes entre distintos 
+\lang english
+topics
+\lang spanish
+ MQTT, detectar la superación de un umbral en un determinado parámetro,
+ detectar la aparición de un mensaje concreto en un 
+\lang english
 topic
-\emph default
- de MQTT.
- Las acciones que pueden asociarse a un evento suponen la interacción con
- otros servicios de la nube de Amazon.
- Así, por ejemplo, es posible intertar un nuevo registro en una base de
+\lang spanish
+, etc.
+ Las acciones que pueden asociarse a un evento son muy variopintas, pero
+ siempre implican una interacción con otros servicios de la nube de Amazon.
+ Así, por ejemplo, es posible insertar un nuevo registro en una base de
  datos 
 \emph on
 AWS
@@ -1410,16 +1733,27 @@ Salesforce
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-AWS Lambda??
-\end_layout
-
+En el capítulo
+\begin_inset space ~
 \end_inset
 
 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:DASHBOARD"
+
+\end_inset
+
+ definiremos algunas reglas con el objetivo de guardar un histórico de valores
+ en una base de datos 
+\emph on
+AWS
+\begin_inset space ~
+\end_inset
+
+DynamoDB
+\emph default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -1427,7 +1761,11 @@ AWS Greengrass
 \end_layout
 
 \begin_layout Standard
-AWS Greengrass es una nueva tecnología de Amazon, independiente a AWS
+AWS
+\begin_inset space ~
+\end_inset
+
+Greengrass es una nueva tecnología de Amazon, independiente a AWS
 \begin_inset space ~
 \end_inset
 
@@ -1751,19 +2089,7 @@ Anotaremos el
 \family typewriter
 \series bold
 \color brown
-Nombre
-\begin_inset space ~
-\end_inset
-
-de
-\begin_inset space ~
-\end_inset
-
-la
-\begin_inset space ~
-\end_inset
-
-Cosa
+nombreDelDispositivo
 \family sans
 \series default
 \color inherit
@@ -1775,19 +2101,7 @@ para su posterior uso.
 \series bold
 \emph default
 \color brown
-Nombre
-\begin_inset space ~
-\end_inset
-
-de
-\begin_inset space ~
-\end_inset
-
-la
-\begin_inset space ~
-\end_inset
-
-Cosa
+nombreDelDispositivo
 \family sans
 \series default
 \emph on
@@ -1985,15 +2299,7 @@ Anotaremos las claves de acceso
 \series bold
 \size small
 \color brown
-Access
-\begin_inset space ~
-\end_inset
-
-Key
-\begin_inset space ~
-\end_inset
-
-Id
+accessKeyId
 \family default
 \series default
 \size default
@@ -2003,15 +2309,7 @@ Id
 \series bold
 \size small
 \color brown
-Secret
-\begin_inset space ~
-\end_inset
-
-Access
-\begin_inset space ~
-\end_inset
-
-Key
+secretAccessKey
 \family default
 \series default
 \size default
@@ -2448,17 +2746,18 @@ reference "fig:form:thing-parameters"
 \end_inset
 
 ).
- Para empezar, tendremos que darle un nombre a nuestro dispositivo, 
+ Para empezar, tendremos que darle un nombre a nuestro dispositivo.
+ Anotaremos este parámetro (
 \family typewriter
 \series bold
 \size small
 \color brown
-Name
+thingName
 \family default
 \series default
 \size default
 \color inherit
-, que anotaremos para su posterior uso.
+) para su posterior uso.
 \end_layout
 
 \begin_layout Standard
@@ -2504,10 +2803,14 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-MISSING
-\end_layout
+\begin_inset Graphics
+	filename img/platform-07-manage-things.png
+	lyxscale 50
+	width 100text%
 
-\begin_layout Plain Layout
+\end_inset
+
+
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
@@ -2559,19 +2862,8 @@ reference "fig:Manage-Things-(with-device)"
 \end_inset
 
 ).
- Haciendo click en el mismo, podremos revisar su configuración y algunos
- datos de interés (figura
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Thing-properties"
-
-\end_inset
-
-).
+ Haciendo click en el mismo, podremos acceder a sus detalles, donde encontraremo
+s algunos datos de interés, organizados en distintas pestañas.
 \end_layout
 
 \begin_layout Standard
@@ -2582,7 +2874,14 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-MISSING
+\begin_inset Graphics
+	filename img/platform-08-interact.png
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -2596,6 +2895,13 @@ name "fig:Thing-properties"
 \end_inset
 
 Propiedades del dispositivo registrado.
+ Pestaña 
+\family sans
+\lang english
+Interact
+\family default
+\lang spanish
+.
 \end_layout
 
 \end_inset
@@ -2609,7 +2915,13 @@ Propiedades del dispositivo registrado.
 \end_layout
 
 \begin_layout Standard
-En la ventana de propiedades del dispositivo (figura
+En la pestaña 
+\family sans
+\lang english
+Interact
+\family default
+\lang spanish
+ (figura
 \begin_inset space ~
 \end_inset
 
@@ -2620,7 +2932,35 @@ reference "fig:Thing-properties"
 
 \end_inset
 
-) Anotaremos ### y ### para su posterior uso.
+) Anotaremos para su posterior uso los valores de 
+\family typewriter
+\series bold
+\size small
+\color brown
+identifer
+\family default
+\series default
+\size default
+\color inherit
+ (
+\family typewriter
+a3aa6mposshpif
+\family default
+ en la figura) y 
+\family typewriter
+\series bold
+\size small
+\color brown
+region
+\family default
+\series default
+\size default
+\color inherit
+ (
+\family typewriter
+us-west-2
+\family default
+ en la figura).
 \end_layout
 
 \begin_layout Standard
@@ -3031,10 +3371,26 @@ Esquema del montaje del circuito en la placa de prototipado.
 \end_layout
 
 \begin_layout Standard
-Para comprobar que nuestro montaje es correcto, podemos comprobar que funciona
- con el proyecto Ping proporcionado junto a este documento (#URL#).
+Para comprobar que nuestro montaje es correcto, podemos cargar el proyecto
+ 
+\family sans
+Ping
+\family default
+ proporcionado junto a este documento (disponible en 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/guyikcgg/Internet-de-las-Cosas
+\end_layout
+
+\end_inset
+
+).
  Este proyecto es una modificación del ejemplo homónimo, incluido en la
- biblioteca de Arduino, con el fin de adaptar los pines a los del 
+ biblioteca de Arduino, en la que se han adaptado los pines a para hacer
+ que el sensor funcione con el 
 \emph on
 NodeMCU
 \begin_inset space ~
@@ -3043,7 +3399,8 @@ NodeMCU
 Amica
 \emph default
 .
- Si todo va bien, el al abrir el 
+ Si hemos realizado el montaje correctamente y el programa se carga sin
+ errores, al abrir el 
 \lang english
 Serial
 \begin_inset space ~
@@ -3055,28 +3412,88 @@ Monitor
 \begin_inset space ~
 \end_inset
 
-##.
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:arduino-serial-monitor-ping"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
+\align center
+\begin_inset Box Shaded
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "95col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
-Tenemos que configurar los pines:
+
+\family sans
+\series bold
+\size small
+Nota:
+\series default
+ El proceso de compilación y de programación del módulo ESP8266 es lento
+ y puede tomar más de dos minutos, dependiendo de las prestaciones del ordenador.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/device-03-02-ping-example.png
+	lyxscale 60
+	scale 40
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
-const int pingPin = D7;
-\end_layout
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
-const int pingiPin = D6;
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:arduino-serial-monitor-ping"
+
+\end_inset
+
+Monitor serial mostrando el correcto funcionamiento del sensor US-100 al
+ colocar un objeto a distintas distancias.
 \end_layout
 
-\begin_layout Plain Layout
-SOLO UN PIN EN EL EJEMPLO...
- QUE HACEMOS??
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -3441,24 +3858,101 @@ Configuración de la conexión
 \noindent
 Una vez instalada la biblioteca, usaremos el ejemplo incluido en la misma
  para conectarnos con AWS.
- Para ello, tendremos que utilizar los siguientes parámetros, que hemos
- anotado previamente: 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-FIXME
-\end_layout
-
-\end_inset
-
-
+ Para ello, tendremos que utilizar los siguientes parámetros, que debemos
+ haber anotado previamente.
 \end_layout
 
 \begin_layout LyX-Code
 \noindent
 iotClient.setAWSRegion("
+\series bold
+\size small
 \color brown
+region
+\series default
+\size default
+\color inherit
+");
+\end_layout
+
+\begin_layout LyX-Code
+\noindent
+iotClient.setAWSEndpoint("amazonaws.com");
+\end_layout
+
+\begin_layout LyX-Code
+\noindent
+iotClient.setAWSDomain("
+\series bold
+\size small
+\color brown
+identifier
+\series default
+\size default
+\color inherit
+.iot.
+\series bold
+\size small
+\color brown
+region
+\series default
+\size default
+\color inherit
+.amazonaws.com");
+\end_layout
+
+\begin_layout LyX-Code
+\noindent
+iotClient.setAWSPath("/things/
+\series bold
+\size small
+\color brown
+thingName
+\series default
+\size default
+\color inherit
+/shadow");
+\end_layout
+
+\begin_layout LyX-Code
+\noindent
+iotClient.setAWSKeyID("
+\family typewriter
+\series bold
+\size small
+\color brown
+accessKeyId
+\family default
+\series default
+\size default
+\color inherit
+");
+\end_layout
+
+\begin_layout LyX-Code
+\noindent
+iotClient.setAWSSecretKey("
+\family typewriter
+\series bold
+\size small
+\color brown
+secretAccessKey
+\family default
+\series default
+\size default
+\color inherit
+");
+\end_layout
+
+\begin_layout Standard
+A continuación se muestra un ejemplo con los parámetros sustituidos por
+ sus valores correspondientes a nuestro caso.
+\end_layout
+
+\begin_layout LyX-Code
+\noindent
+iotClient.setAWSRegion("
+\color olive
 us-west-2
 \color inherit
 ");
@@ -3472,8 +3966,12 @@ iotClient.setAWSEndpoint("amazonaws.com");
 \begin_layout LyX-Code
 \noindent
 iotClient.setAWSDomain("
-\color brown
-a3aa6mposshpif.iot.us-west-2
+\color olive
+a3aa6mposshpif
+\color inherit
+.iot.
+\color olive
+us-west-2
 \color inherit
 .amazonaws.com");
 \end_layout
@@ -3481,8 +3979,8 @@ a3aa6mposshpif.iot.us-west-2
 \begin_layout LyX-Code
 \noindent
 iotClient.setAWSPath("/things/
-\color brown
-mything
+\color olive
+NodeMCU
 \color inherit
 /shadow");
 \end_layout
@@ -3490,7 +3988,7 @@ mything
 \begin_layout LyX-Code
 \noindent
 iotClient.setAWSKeyID("
-\color brown
+\color olive
 AKIAJHVTKXW5SHJCUHRQ
 \color inherit
 ");
@@ -3499,19 +3997,19 @@ AKIAJHVTKXW5SHJCUHRQ
 \begin_layout LyX-Code
 \noindent
 iotClient.setAWSSecretKey("
-\color brown
+\color olive
 mTRB2vzRzrwsb65NiNQFlQ6+4XGNp4leZJY5S7c3
 \color inherit
 ");
 \end_layout
 
 \begin_layout Standard
-También será necesario indicar las opciones de conexión Wi-Fi.
+De forma adicional, será necesario indicar las opciones de conexión Wi-Fi.
 \end_layout
 
 \begin_layout LyX-Code
 char *ssid="
-\color brown
+\color olive
 MySSID
 \color inherit
 "; 
@@ -3519,7 +4017,7 @@ MySSID
 
 \begin_layout LyX-Code
 char *password="
-\color brown
+\color olive
 MyPASS
 \color inherit
 ";
@@ -3527,59 +4025,25 @@ MyPASS
 
 \begin_layout Standard
 Una vez hecho esto, podemos compilar el ejemplo y subirlo a la placa.
- Al abrir el monitor serial deberíamos ver lo siguiente 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-TODO screenshot
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
 \align center
-\begin_inset Box Shaded
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "95col%"
-special "none"
-height "1in"
-height_special "totalheight"
-thickness "0.4pt"
-separation "3pt"
-shadowsize "4pt"
-framecolor "black"
-backgroundcolor "none"
-status open
-
-\begin_layout Plain Layout
-
-\family sans
-\series bold
-\size small
-Nota:
-\series default
- El proceso de compilación y de programación del módulo ESP8266 es lento
- y puede tomar más de dos minutos, dependiendo de las prestaciones del ordenador.
-\end_layout
+\begin_inset Graphics
+	filename img/device-07-aws-connection.png
+	lyxscale 60
+	scale 40
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Ahora podemos ir al AWS y ver que efectivamente se está produciendo una
- comunicación.
- 
 \begin_inset Note Note
 status open
 
@@ -3592,8 +4056,197 @@ TODO screenshot
 
 \end_layout
 
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:arduino-serial-monitor-aws"
+
+\end_inset
+
+Monitor serial mostrando la comunicación entre el NodeMCU
+\begin_inset space ~
+\end_inset
+
+Amica y la nube de Amazon.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
-Para 
+Al abrir el monitor serial deberíamos ver mensajes parecidos a los de la
+ figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:arduino-serial-monitor-aws"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/platform-09-activity.png
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Thing-properties-1"
+
+\end_inset
+
+Propiedades del dispositivo registrado.
+ Pestaña 
+\family sans
+\lang english
+Activity
+\family default
+\lang spanish
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ahora podemos ir a la consola de AWS
+\begin_inset space ~
+\end_inset
+
+IoT y ver que efectivamente se está produciendo una comunicación.
+ Para ello, nos dirigiremos a la pestaña 
+\family sans
+\lang english
+Activity
+\family default
+\lang spanish
+, donde podremos ver las sucesivas actualizaciones de la sombra (figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Thing-properties-1"
+
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/platform-10-shadow.png
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Thing-properties-2"
+
+\end_inset
+
+Propiedades del dispositivo registrado.
+ Pestaña 
+\family sans
+\lang english
+Shadow
+\family default
+\lang spanish
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Para observar el estado actual del dispositivo, podemos consultar su sombra
+ en la pestaña 
+\family sans
+\lang english
+Shadow
+\family default
+\lang spanish
+ (figura
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Thing-properties-2"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Con esto habremos logrado conectar nuestro dispositivo a la plataforma con
+ éxito.
 \end_layout
 
 \begin_layout Chapter
@@ -3604,6 +4257,68 @@ name "chap:DASHBOARD"
 \end_inset
 
 Visualización de los datos
+\end_layout
+
+\begin_layout Standard
+A continuación trabajaremos la visualización de los datos, confeccionando
+ un panel de control en el que se mostrará el valor actual del sensor junto
+ con una gráfica de datos históricos.
+ Para llevar a cabo esta tarea, almacenaremos los valores recogidos por
+ nuestro sensor en una base de datos 
+\emph on
+DynamoDB 
+\emph default
+de Amazon.
+ Por otro lado, tendremos una aplicación web que leerá estos valores y los
+ representará gráficamente.
+ Nuestra aplicación se conectará a AWS usando su API RESTful, por lo que
+ tendremos que configurar las credenciales de usuario antes de poder hacer
+ uso de la misma.
+\end_layout
+
+\begin_layout Section
+Configuración de AWS
+\begin_inset space ~
+\end_inset
+
+IoT
+\end_layout
+
+\begin_layout Standard
+DynamoDB > Creacion de reglas para almacenar los datos en la base de datos
+\end_layout
+
+\begin_layout Standard
+Esta tarea es bastante sencilla, pues consiste en establecer una regla en
+ la consola de AWS
+\begin_inset space ~
+\end_inset
+
+IoT que ejecute la acción de guardar el dato cada vez que se reciba un valor
+ nuevo.
+\end_layout
+
+\begin_layout Section
+Configuración de la Aplicación Web
+\end_layout
+
+\begin_layout Standard
+Charts.js > Modificar archivo JS e introducir las credenciales
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://hackernoon.com/building-an-iot-dashboard-using-the-onion-omega-and-amazon
+-aws-a3520f850c9
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Chapter
